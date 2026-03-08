@@ -23,7 +23,9 @@ async function getShortestUniquePath(
 
   for (let suffixLen = 1; suffixLen <= parts.length; suffixLen++) {
     const suffix = parts.slice(-suffixLen).join('/');
-    const count = allRelativePaths.filter(p => p.endsWith(suffix)).length;
+    const count = allRelativePaths.filter(
+      p => p === suffix || p.endsWith('/' + suffix)
+    ).length;
     if (count === 1) {
       return suffix;
     }
