@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as os from 'os';
 
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
@@ -13,9 +14,15 @@ export function activate(context: vscode.ExtensionContext) {
 
       const doc = editor.document;
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(doc.uri);
-      const relativePath = workspaceFolder
-        ? vscode.workspace.asRelativePath(doc.uri)
-        : doc.fileName;
+      let relativePath: string;
+      if (workspaceFolder) {
+        relativePath = vscode.workspace.asRelativePath(doc.uri);
+      } else {
+        const homedir = os.homedir();
+        relativePath = doc.fileName.startsWith(homedir)
+          ? '~' + doc.fileName.slice(homedir.length)
+          : doc.fileName;
+      }
 
       const selection = editor.selection;
       let ref: string;
