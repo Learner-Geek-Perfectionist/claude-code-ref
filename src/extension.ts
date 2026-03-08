@@ -23,16 +23,16 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (selection.isEmpty) {
         const line = selection.active.line + 1;
-        ref = `${relativePath}:${line}`;
-        lineInfo = `:${line}`;
+        ref = `@${relativePath}#${line}`;
+        lineInfo = `#${line}`;
       } else {
         const startLine = selection.start.line + 1;
         let endLine = selection.end.line + 1;
         if (selection.end.character === 0 && selection.end.line > selection.start.line) {
           endLine = selection.end.line;
         }
-        ref = `${relativePath}:${startLine}-${endLine}`;
-        lineInfo = `:${startLine}-${endLine}`;
+        ref = `@${relativePath}#${startLine}-${endLine}`;
+        lineInfo = `#${startLine}-${endLine}`;
       }
 
       await vscode.env.clipboard.writeText(ref);
