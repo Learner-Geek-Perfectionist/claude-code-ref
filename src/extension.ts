@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
@@ -26,14 +27,17 @@ export function activate(context: vscode.ExtensionContext) {
         lineInfo = `:${line}`;
       } else {
         const startLine = selection.start.line + 1;
-        const endLine = selection.end.line + 1;
+        let endLine = selection.end.line + 1;
+        if (selection.end.character === 0 && selection.end.line > selection.start.line) {
+          endLine = selection.end.line;
+        }
         ref = `${relativePath}:${startLine}-${endLine}`;
         lineInfo = `:${startLine}-${endLine}`;
       }
 
       await vscode.env.clipboard.writeText(ref);
 
-      const fileName = doc.fileName.split('/').pop() || doc.fileName;
+      const fileName = path.basename(doc.fileName);
       const lineCount = selection.isEmpty ? 1 : selection.end.line - selection.start.line + 1;
 
       if (lineCount > 200) {
