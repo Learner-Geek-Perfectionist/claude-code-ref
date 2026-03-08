@@ -1,62 +1,67 @@
 # Claude Code Reference
 
-VS Code extension that copies file references in `@file#line` format and sends them directly to [Kitty](https://sw.kovidgoyal.net/kitty/) terminal for use with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI.
+一键复制代码引用（`@file#line` 格式）并直接发送到 [Kitty](https://sw.kovidgoyal.net/kitty/) 终端，配合 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI 使用。
 
-一键复制代码引用并发送到 Kitty 终端，配合 Claude Code CLI 使用。
+## 功能
 
-## Features
+- **一键操作**：选中代码，按 `Alt+K`，引用自动发送到 Kitty 并聚焦终端
+- **智能文件名**：文件名唯一时只用文件名，有重名时使用相对路径
+- **Kitty 集成**：通过 Kitty remote control 直接发送文本，稳定可靠
+- **剪贴板备份**：引用同时复制到剪贴板
 
-- **One-key workflow**: Select code, press `Alt+K` — reference is sent to Kitty and the terminal is focused
-- **Smart file naming**: Uses basename when unique in workspace, falls back to relative path when duplicates exist
-- **Kitty integration**: Sends text via Kitty remote control (no flaky keystroke simulation)
-- **Clipboard backup**: Reference is also copied to clipboard
+### 引用格式
 
-### Reference format
+| 场景 | 输出 |
+|------|------|
+| 光标在第 42 行 | `@extension.ts#42` |
+| 选中第 7-12 行 | `@extension.ts#7-12` |
+| 文件名有重复 | `@src/utils/index.ts#5` |
+| 工作区外的文件 | `@/full/path/to/file.ts#10` |
 
-| Scenario | Output |
-|----------|--------|
-| Cursor on line 42 | `@extension.ts#42` |
-| Selection lines 7-12 | `@extension.ts#7-12` |
-| Duplicate filename | `@src/utils/index.ts#5` |
-| Outside workspace | `@/full/path/to/file.ts#10` |
+## 前置配置
 
-## Prerequisites
+### 1. 配置 Kitty 终端
 
-**Kitty terminal** with remote control enabled. Add to your `~/.config/kitty/kitty.conf`:
+本插件依赖 Kitty 的 remote control 功能，需要在 `~/.config/kitty/kitty.conf` 中添加以下配置：
 
 ```conf
 allow_remote_control socket-only
 listen_on unix:/tmp/kitty-socket
 ```
 
-Then restart Kitty.
+添加后**重启 Kitty** 使配置生效。
 
-## Install
+### 2. 安装插件
+
+从 [GitHub Releases](https://github.com/Learner-Geek-Perfectionist/claude-code-ref/releases) 下载 `.vsix` 文件，然后安装：
 
 ```bash
-# Build from source
+code --install-extension claude-code-ref-0.1.0.vsix
+```
+
+或者从源码构建：
+
+```bash
 git clone https://github.com/Learner-Geek-Perfectionist/claude-code-ref.git
 cd claude-code-ref
 npm install
 npm run compile
 npx vsce package
-
-# Install the .vsix
 code --install-extension claude-code-ref-0.1.0.vsix
 ```
 
-## Usage
+## 使用方法
 
-1. Open a file in VS Code
-2. Place cursor on a line or select a range
-3. Press `Alt+K`
-4. The reference is sent to Kitty and the terminal is focused
+1. 在 VS Code 中打开文件
+2. 将光标放在某行，或选中一段代码
+3. 按 `Alt+K`
+4. 引用自动发送到 Kitty 终端并聚焦
 
-## Keybinding
+## 自定义快捷键
 
-Default: `Alt+K` (when editor has focus)
+默认快捷键：`Alt+K`（编辑器聚焦时）
 
-To customize, add to your `keybindings.json`:
+如需修改，在 `keybindings.json` 中添加：
 
 ```json
 {
