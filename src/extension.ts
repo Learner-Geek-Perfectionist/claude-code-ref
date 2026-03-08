@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
       const doc = editor.document;
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(doc.uri);
       const relativePath = workspaceFolder
-        ? vscode.workspace.asRelativePath(doc.uri)
+        ? await getShortestUniquePath(doc)
         : doc.fileName;
 
       const selection = editor.selection;
