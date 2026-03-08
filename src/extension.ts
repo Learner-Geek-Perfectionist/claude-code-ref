@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as os from 'os';
 
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
@@ -14,14 +13,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       const doc = editor.document;
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(doc.uri);
-      let relativePath: string;
-      if (workspaceFolder) {
-        relativePath = vscode.workspace.asRelativePath(doc.uri);
-      } else {
-        const homedir = os.homedir();
-        relativePath = doc.fileName.startsWith(homedir)
-          ? '~' + doc.fileName.slice(homedir.length)
-          : doc.fileName;
+      let filePath = workspaceFolder
+        ? vscode.workspace.asRelativePath(doc.uri)
+        : doc.fileName;
+
+      const maxPathLength = 40;
+      if (filePath.length > maxPathLength) {
+        filePath = path.basename(doc.fileName);
       }
 
       const selection = editor.selection;
@@ -30,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (selection.isEmpty) {
         const line = selection.active.line + 1;
-        ref = `@${relativePath}#${line}`;
+        ref = `@${filePath}#${line}`;
         lineInfo = `#${line}`;
       } else {
         const startLine = selection.start.line + 1;
@@ -38,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (selection.end.character === 0 && selection.end.line > selection.start.line) {
           endLine = selection.end.line;
         }
-        ref = `@${relativePath}#${startLine}-${endLine}`;
+        ref = `@${filePath}#${startLine}-${endLine}`;
         lineInfo = `#${startLine}-${endLine}`;
       }
 
