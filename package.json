@@ -1,0 +1,36 @@
+{
+  "name": "claude-code-ref",
+  "displayName": "Claude Code Reference",
+  "description": "Copy file path and line range to clipboard for Claude Code CLI",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "claude-code-ref.copyReference",
+        "title": "Copy Code Reference for Claude"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "claude-code-ref.copyReference",
+        "key": "alt+k",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^3.0.0"
+  }
+}
