@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
-import { exec, execFile } from 'child_process';
+import { readdir } from 'fs/promises';
+import { execFile } from 'child_process';
 
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
         filePath = doc.fileName;
       } else {
         const basename = path.basename(doc.fileName);
-        const matches = await vscode.workspace.findFiles(`**/${basename}`);
+        const matches = await vscode.workspace.findFiles(`**/${basename}`, null, 2);
         filePath = matches.length > 1
           ? vscode.workspace.asRelativePath(doc.uri)
           : basename;
@@ -28,12 +28,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       const selection = editor.selection;
       let ref: string;
-      let lineInfo: string;
 
       if (selection.isEmpty) {
         const line = selection.active.line + 1;
         ref = `@${filePath}#${line}`;
-        lineInfo = `#${line}`;
       } else {
         const startLine = selection.start.line + 1;
         let endLine = selection.end.line + 1;
@@ -41,14 +39,19 @@ export function activate(context: vscode.ExtensionContext) {
           endLine = selection.end.line;
         }
         ref = `@${filePath}#${startLine}-${endLine}`;
-        lineInfo = `#${startLine}-${endLine}`;
       }
 
       await vscode.env.clipboard.writeText(ref);
 
       // Find Kitty socket (has PID suffix like kitty-socket-12345)
-      const socketFile = fs.readdirSync('/tmp')
-        .find(f => f.startsWith('kitty-socket'));
+      let socketFile: string | undefined;
+      try {
+        const files = await readdir('/tmp');
+        socketFile = files.find(f => f.startsWith('kitty-socket'));
+      } catch {
+        vscode.window.showErrorMessage('Failed to scan /tmp for Kitty socket.');
+        return;
+      }
       if (!socketFile) {
         vscode.window.showErrorMessage('Kitty socket not found. Is allow_remote_control enabled?');
         return;
@@ -61,7 +64,11 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.showErrorMessage(`Kitty send-text failed: ${err.message}`);
         }
       });
-      exec('open -a kitty');
+      execFile('open', ['-a', 'kitty'], (err) => {
+        if (err) {
+          vscode.window.showWarningMessage(`Could not focus Kitty: ${err.message}`);
+        }
+      });
     }
   );
 

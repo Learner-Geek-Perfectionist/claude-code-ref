@@ -2,6 +2,7 @@
   "name": "claude-code-ref",
   "displayName": "Claude Code Reference",
   "description": "Copy file path and line range to clipboard for Claude Code CLI",
+  "publisher": "Xin",
   "version": "0.1.0",
   "engines": {
     "vscode": "^1.85.0"
