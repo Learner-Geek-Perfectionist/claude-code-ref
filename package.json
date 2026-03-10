@@ -20,6 +20,10 @@
       {
         "command": "claude-code-ref.copyReference",
         "title": "Copy Code Reference for Claude"
+      },
+      {
+        "command": "claude-code-ref.copyExplorerReference",
+        "title": "Copy File/Folder Reference for Claude"
       }
     ],
     "keybindings": [
@@ -27,6 +31,11 @@
         "command": "claude-code-ref.copyReference",
         "key": "alt+k",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "claude-code-ref.copyExplorerReference",
+        "key": "alt+k",
+        "when": "filesExplorerFocus"
       }
     ]
   },
