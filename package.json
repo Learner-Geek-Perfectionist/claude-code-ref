@@ -3,7 +3,7 @@
   "displayName": "Claude Code Reference",
   "description": "Copy file path and line range to clipboard for Claude Code CLI",
   "publisher": "Xin",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -24,6 +24,10 @@
       {
         "command": "claude-code-ref.copyExplorerReference",
         "title": "Copy File/Folder Reference for Claude"
+      },
+      {
+        "command": "claude-code-ref.toggleAbsolutePath",
+        "title": "Toggle Absolute Path Mode for Claude"
       }
     ],
     "keybindings": [
@@ -36,6 +40,10 @@
         "command": "claude-code-ref.copyExplorerReference",
         "key": "alt+k",
         "when": "filesExplorerFocus"
+      },
+      {
+        "command": "claude-code-ref.toggleAbsolutePath",
+        "key": "alt+j"
       }
     ]
   },

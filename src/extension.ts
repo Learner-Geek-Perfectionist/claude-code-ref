@@ -3,6 +3,10 @@ import * as path from 'path';
 import { readdir } from 'fs/promises';
 import { execFile } from 'child_process';
 
+/** When true, all paths use absolute form. */
+let useAbsolutePath = false;
+let statusBarItem: vscode.StatusBarItem;
+
 /**
  * Copy ref to clipboard, send to Kitty terminal, and focus Kitty.
  */
@@ -42,7 +46,7 @@ async function getSmartFilePath(
   uri: vscode.Uri,
   workspaceFolder: vscode.WorkspaceFolder | undefined
 ): Promise<string> {
-  if (!workspaceFolder) {
+  if (useAbsolutePath || !workspaceFolder) {
     return uri.fsPath;
   }
   const basename = path.basename(uri.fsPath);
@@ -60,11 +64,11 @@ async function getSmartFolderPath(
   uri: vscode.Uri,
   workspaceFolder: vscode.WorkspaceFolder | undefined
 ): Promise<string> {
-  const basename = path.basename(uri.fsPath);
-
-  if (!workspaceFolder) {
+  if (useAbsolutePath || !workspaceFolder) {
     return uri.fsPath + '/';
   }
+
+  const basename = path.basename(uri.fsPath);
 
   // Find files directly inside any folder named `basename` to detect duplicates
   const matches = await vscode.workspace.findFiles(`**/${basename}/*`, null, 50);
@@ -90,6 +94,27 @@ async function getSmartFolderPath(
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  // ── Status bar: show current path mode ──
+  statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right, 100
+  );
+  statusBarItem.command = 'claude-code-ref.toggleAbsolutePath';
+  statusBarItem.tooltip = 'Click to toggle absolute/relative path mode';
+  updateStatusBar();
+  statusBarItem.show();
+
+  // ── Toggle absolute path mode ──
+  const toggleCmd = vscode.commands.registerCommand(
+    'claude-code-ref.toggleAbsolutePath',
+    () => {
+      useAbsolutePath = !useAbsolutePath;
+      updateStatusBar();
+      vscode.window.showInformationMessage(
+        useAbsolutePath ? 'Path mode: Absolute' : 'Path mode: Smart (relative)'
+      );
+    }
+  );
+
   // ── Editor: @file#line or @file#startLine-endLine ──
   const editorCmd = vscode.commands.registerCommand(
     'claude-code-ref.copyReference',
@@ -156,7 +181,11 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(editorCmd, explorerCmd);
+  context.subscriptions.push(toggleCmd, editorCmd, explorerCmd, statusBarItem);
+}
+
+function updateStatusBar(): void {
+  statusBarItem.text = useAbsolutePath ? '$(file-symlink-file) ABS' : '$(file-code) REL';
 }
 
 export function deactivate() {}
