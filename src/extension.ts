@@ -27,7 +27,7 @@ async function sendRef(ref: string): Promise<void> {
   }
   const socket = `unix:/tmp/${socketFile}`;
 
-  execFile('kitty', ['@', '--to', socket, 'send-text', '--', ref], (err) => {
+  execFile('kitty', ['@', '--to', socket, 'send-text', '--match', 'recent:0', '--', ref], (err) => {
     if (err) {
       vscode.window.showErrorMessage(`Kitty send-text failed: ${err.message}`);
     }
