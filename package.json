@@ -30,6 +30,14 @@
         "title": "Toggle Absolute Path Mode for Claude"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "claude-code-ref.copyExplorerReference",
+          "group": "navigation"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "claude-code-ref.copyReference",
@@ -39,7 +47,7 @@
       {
         "command": "claude-code-ref.copyExplorerReference",
         "key": "alt+k",
-        "when": "filesExplorerFocus"
+        "when": "listFocus && explorerViewletVisible && !inputFocus"
       },
       {
         "command": "claude-code-ref.toggleAbsolutePath",

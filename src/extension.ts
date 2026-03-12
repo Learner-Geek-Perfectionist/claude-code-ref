@@ -94,6 +94,8 @@ async function getSmartFolderPath(
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log('[DEBUG] Extension activated');
+
   // ── Status bar: show current path mode ──
   statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right, 100
@@ -152,22 +154,39 @@ export function activate(context: vscode.ExtensionContext) {
   const explorerCmd = vscode.commands.registerCommand(
     'claude-code-ref.copyExplorerReference',
     async (uri?: vscode.Uri) => {
+      console.log('[DEBUG] copyExplorerReference called, uri:', uri?.fsPath);
+
       if (!uri) {
-        // Keybinding in explorer doesn't pass URI — fall back to built-in command
+        console.log('[DEBUG] No URI provided, trying clipboard trick');
         const prev = await vscode.env.clipboard.readText();
-        await vscode.commands.executeCommand('copyFilePath');
+        console.log('[DEBUG] Previous clipboard:', prev.substring(0, 50));
+
+        try {
+          await vscode.commands.executeCommand('copyFilePath');
+          console.log('[DEBUG] copyFilePath executed');
+        } catch (err) {
+          console.error('[DEBUG] copyFilePath failed:', err);
+          vscode.window.showErrorMessage(`copyFilePath failed: ${err}`);
+          return;
+        }
+
         const copied = await vscode.env.clipboard.readText();
+        console.log('[DEBUG] Copied from clipboard:', copied.substring(0, 100));
+        await vscode.env.clipboard.writeText(prev);
 
         if (!copied || copied === prev) {
+          console.log('[DEBUG] No change in clipboard');
           vscode.window.showWarningMessage('No file or folder selected');
           return;
         }
         uri = vscode.Uri.file(copied.split('\n')[0].trim());
+        console.log('[DEBUG] Parsed URI:', uri.fsPath);
       }
 
       const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
       const stat = await vscode.workspace.fs.stat(uri);
       const isFolder = (stat.type & vscode.FileType.Directory) !== 0;
+      console.log('[DEBUG] isFolder:', isFolder, 'path:', uri.fsPath);
 
       let refPath: string;
       if (isFolder) {
@@ -175,6 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
       } else {
         refPath = await getSmartFilePath(uri, workspaceFolder);
       }
+      console.log('[DEBUG] Final ref:', `@${refPath}`);
 
       const ref = `@${refPath}`;
       await sendRef(ref);
