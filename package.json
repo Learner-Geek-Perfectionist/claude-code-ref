@@ -34,7 +34,7 @@
       "explorer/context": [
         {
           "command": "claude-code-ref.copyExplorerReference",
-          "group": "navigation"
+          "group": "9_cutcopypaste"
         }
       ]
     },
