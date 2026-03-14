@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
 import { readdir } from 'fs/promises';
-import { execFile } from 'child_process';
+import { execFile as execFileCb } from 'child_process';
 import { promisify } from 'util';
 
-const execFileAsync = promisify(execFile);
+const execFileAsync = promisify(execFileCb);
 
 let statusBarItem: vscode.StatusBarItem;
-let socketCheckTimer: ReturnType<typeof setInterval> | undefined;
 
 // ── Kitty socket discovery ──────────────────────────────────
 
@@ -80,8 +79,8 @@ async function sendToKitty(text: string): Promise<SendResult> {
     return { success: false, error: `Kitty send-text failed: ${msg}` };
   }
 
-  // Focus Kitty window (best-effort, don't fail if this errors)
-  execFile('open', ['-a', 'kitty'], () => {});
+  // Focus Kitty window (best-effort)
+  execFileAsync('open', ['-a', 'kitty']).catch(() => {});
 
   // Get tab info (best-effort)
   const tabInfo = await getActiveTabInfo(socketPath);
@@ -184,7 +183,7 @@ export function activate(context: vscode.ExtensionContext): void {
   updateKittyStatus();
 
   // Check Kitty connection every 10 seconds
-  socketCheckTimer = setInterval(updateKittyStatus, 10_000);
+  const timer = setInterval(updateKittyStatus, 10_000);
 
   // Register command
   const cmd = vscode.commands.registerCommand(
@@ -192,12 +191,7 @@ export function activate(context: vscode.ExtensionContext): void {
     sendReference,
   );
 
-  context.subscriptions.push(cmd, statusBarItem);
+  context.subscriptions.push(cmd, statusBarItem, { dispose: () => clearInterval(timer) });
 }
 
-export function deactivate(): void {
-  if (socketCheckTimer) {
-    clearInterval(socketCheckTimer);
-    socketCheckTimer = undefined;
-  }
-}
+export function deactivate(): void {}
