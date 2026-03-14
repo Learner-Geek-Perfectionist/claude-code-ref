@@ -139,7 +139,7 @@ async function sendReference(): Promise<void> {
 
     // Success feedback (auto-dismiss after 3s)
     const msg = result.tabPosition && result.tabTitle
-      ? `✓ #${result.tabPosition} ${result.tabTitle}`
+      ? `✓ #${result.tabPosition}:${result.tabTitle}`
       : '✓ Sent';
     vscode.window.withProgress(
       { location: vscode.ProgressLocation.Notification, title: msg },
