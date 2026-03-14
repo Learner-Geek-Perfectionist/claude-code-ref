@@ -79,9 +79,6 @@ async function sendToKitty(text: string): Promise<SendResult> {
     return { success: false, error: `Kitty send-text failed: ${msg}` };
   }
 
-  // Focus Kitty window (best-effort)
-  execFileAsync('open', ['-a', 'kitty']).catch(() => {});
-
   // Get tab info (best-effort)
   const tabInfo = await getActiveTabInfo(socketPath);
 
@@ -151,6 +148,9 @@ async function sendReference(): Promise<void> {
       ? `✅ #${result.tabPosition}:${result.tabTitle}`
       : '✅ Sent';
     showCenteredNotification(msg, 3000);
+
+    // Focus Kitty after notification is visible
+    setTimeout(() => execFileAsync('open', ['-a', 'kitty']).catch(() => {}), 800);
   } else {
     // Failure feedback with diagnostic
     const actions = result.error?.includes('socket')
