@@ -1,62 +1,60 @@
 # Claude Code Reference
 
-A VSCode extension that sends code references to [Kitty](https://sw.kovidgoyal.net/kitty/) terminal for use with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI.
+一个 VSCode 扩展，按 `Alt+K` 即可将代码引用（绝对路径 + 行号）发送到 [Kitty](https://sw.kovidgoyal.net/kitty/) 终端，配合 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI 使用。
 
-Press `Alt+K` in the editor to send the current file path and line number(s) to Kitty — no copy-paste needed.
+## 工作原理
 
-## How It Works
+1. 在编辑器中将光标放到目标行（或选中多行）
+2. 按 `Alt+K`
+3. 扩展将引用（如 `@/path/to/file.ts#42`）发送到当前 Kitty 活动标签页
+4. 引用同时复制到剪贴板
+5. 自动聚焦 Kitty 窗口
 
-1. You place your cursor (or select lines) in a file
-2. Press `Alt+K`
-3. The extension sends a reference like `@/path/to/file.ts#42` to the active Kitty tab
-4. The reference is also copied to your clipboard
-5. Kitty is focused automatically
+多行选区使用范围格式：`@/path/to/file.ts#10-25`
 
-For multi-line selections, references use range format: `@/path/to/file.ts#10-25`
+支持多光标 — 每个光标/选区生成一条独立引用。
 
-Multiple cursors are supported — each cursor/selection generates a separate reference.
+## 环境要求
 
-## Requirements
-
-- **macOS** (uses `open -a kitty` for focus)
-- **[Kitty terminal](https://sw.kovidgoyal.net/kitty/)** with [remote control](https://sw.kovidgoyal.net/kitty/remote-control/) enabled
+- **macOS**（使用 `open -a kitty` 聚焦窗口）
+- **[Kitty 终端](https://sw.kovidgoyal.net/kitty/)**，需开启[远程控制](https://sw.kovidgoyal.net/kitty/remote-control/)
 - **VSCode** 1.85+
 
-### Enable Kitty Remote Control
+### 开启 Kitty 远程控制
 
-Add to your `kitty.conf`:
+在 `kitty.conf` 中添加：
 
 ```
 allow_remote_control yes
 listen_on unix:/tmp/kitty-socket
 ```
 
-Then restart Kitty.
+然后重启 Kitty。
 
-## Installation
+## 安装
 
 ```bash
-# Clone and build
+# 克隆并构建
 git clone https://github.com/Learner-Geek-Perfectionist/claude-code-ref.git
 cd claude-code-ref
 npm install
 npm run compile
 npm run package
 
-# Install the .vsix file
+# 安装 .vsix 文件
 code --install-extension claude-code-ref-1.0.0.vsix
 ```
 
-## Usage
+## 使用
 
-| Action | Shortcut |
-|--------|----------|
-| Send code reference to Kitty | `Alt+K` |
+| 操作 | 快捷键 |
+|------|--------|
+| 发送代码引用到 Kitty | `Alt+K` |
 
-The status bar shows Kitty connection status:
-- `$(terminal) Kitty ✓` — connected
-- `$(warning) Kitty ✗` — socket not found
+状态栏显示 Kitty 连接状态：
+- `Kitty ✓` — 已连接
+- `Kitty ✗` — 未找到 socket
 
-## License
+## 许可证
 
 MIT
