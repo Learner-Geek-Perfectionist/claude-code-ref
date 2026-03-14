@@ -116,6 +116,15 @@ function buildReference(editor: vscode.TextEditor): string {
   return refs.join(' ') + ' ';
 }
 
+// ── Centered notification (QuickPick trick) ─────────────────
+
+function showCenteredNotification(message: string, timeout: number): void {
+  const qp = vscode.window.createQuickPick();
+  qp.title = message;
+  qp.show();
+  setTimeout(() => qp.dispose(), timeout);
+}
+
 // ── Command handler ─────────────────────────────────────────
 
 async function sendReference(): Promise<void> {
@@ -137,21 +146,18 @@ async function sendReference(): Promise<void> {
       return;
     }
 
-    // Success feedback (auto-dismiss after 3s)
+    // Success feedback — centered QuickPick, auto-dismiss after 3s
     const msg = result.tabPosition && result.tabTitle
-      ? `✓ #${result.tabPosition}:${result.tabTitle}`
-      : '✓ Sent';
-    vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: msg },
-      () => new Promise(resolve => setTimeout(resolve, 3000)),
-    );
+      ? `✅ #${result.tabPosition}:${result.tabTitle}`
+      : '✅ Sent';
+    showCenteredNotification(msg, 3000);
   } else {
     // Failure feedback with diagnostic
     const actions = result.error?.includes('socket')
       ? ['Open Setup Guide']
       : [];
     const choice = await vscode.window.showErrorMessage(
-      result.error ?? 'Unknown error sending to Kitty',
+      `❌ ${result.error ?? 'Unknown error sending to Kitty'}`,
       ...actions,
     );
     if (choice === 'Open Setup Guide') {
