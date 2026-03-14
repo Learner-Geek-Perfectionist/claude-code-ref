@@ -141,7 +141,7 @@ async function sendReference(): Promise<void> {
     const tabDesc = result.tabPosition && result.tabTitle
       ? ` → tab #${result.tabPosition} "${result.tabTitle}"`
       : '';
-    vscode.window.setStatusBarMessage(`✓ Sent ${refText.trimEnd()}${tabDesc}`, 3000);
+    vscode.window.showInformationMessage(`✓ Sent ${refText.trimEnd()}${tabDesc}`);
   } else {
     // Failure feedback with diagnostic
     const actions = result.error?.includes('socket')
