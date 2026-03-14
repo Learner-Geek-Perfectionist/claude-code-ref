@@ -137,11 +137,14 @@ async function sendReference(): Promise<void> {
       return;
     }
 
-    // Success feedback with tab info
+    // Success feedback with tab info (auto-dismiss after 3s)
     const tabDesc = result.tabPosition && result.tabTitle
-      ? ` → tab #${result.tabPosition} "${result.tabTitle}"`
+      ? `tab #${result.tabPosition} "${result.tabTitle}" ← `
       : '';
-    vscode.window.showInformationMessage(`✓ Sent ${refText.trimEnd()}${tabDesc}`);
+    vscode.window.withProgress(
+      { location: vscode.ProgressLocation.Notification, title: `✓ ${tabDesc}${refText.trimEnd()}` },
+      () => new Promise(resolve => setTimeout(resolve, 3000)),
+    );
   } else {
     // Failure feedback with diagnostic
     const actions = result.error?.includes('socket')
