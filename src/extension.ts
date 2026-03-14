@@ -118,7 +118,11 @@ function buildReference(editor: vscode.TextEditor): string {
 function showCenteredNotification(message: string, timeout: number): void {
   const qp = vscode.window.createQuickPick();
   qp.title = message;
+  qp.placeholder = message;
+  qp.ignoreFocusOut = true;
   qp.show();
+  qp.onDidAccept(() => qp.dispose());
+  qp.onDidHide(() => qp.dispose());
   setTimeout(() => qp.dispose(), timeout);
 }
 
@@ -143,7 +147,6 @@ async function sendReference(): Promise<void> {
       return;
     }
 
-    // Success feedback — centered QuickPick, auto-dismiss after 3s
     const msg = result.tabPosition && result.tabTitle
       ? `✅ #${result.tabPosition}:${result.tabTitle}`
       : '✅ Sent';
