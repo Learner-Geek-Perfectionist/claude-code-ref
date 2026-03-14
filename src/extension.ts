@@ -137,12 +137,12 @@ async function sendReference(): Promise<void> {
       return;
     }
 
-    // Success feedback with tab info (auto-dismiss after 3s)
-    const tabDesc = result.tabPosition && result.tabTitle
-      ? `tab #${result.tabPosition} "${result.tabTitle}" ← `
-      : '';
+    // Success feedback (auto-dismiss after 3s)
+    const msg = result.tabPosition && result.tabTitle
+      ? `✓ #${result.tabPosition} ${result.tabTitle}`
+      : '✓ Sent';
     vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: `✓ ${tabDesc}${refText.trimEnd()}` },
+      { location: vscode.ProgressLocation.Notification, title: msg },
       () => new Promise(resolve => setTimeout(resolve, 3000)),
     );
   } else {
