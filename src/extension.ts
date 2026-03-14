@@ -113,19 +113,6 @@ function buildReference(editor: vscode.TextEditor): string {
   return refs.join(' ') + ' ';
 }
 
-// ── Centered notification (QuickPick trick) ─────────────────
-
-function showCenteredNotification(message: string, timeout: number): void {
-  const qp = vscode.window.createQuickPick();
-  qp.title = message;
-  qp.placeholder = message;
-  qp.ignoreFocusOut = true;
-  qp.show();
-  qp.onDidAccept(() => qp.dispose());
-  qp.onDidHide(() => qp.dispose());
-  setTimeout(() => qp.dispose(), timeout);
-}
-
 // ── Command handler ─────────────────────────────────────────
 
 async function sendReference(): Promise<void> {
@@ -150,10 +137,13 @@ async function sendReference(): Promise<void> {
     const msg = result.tabPosition && result.tabTitle
       ? `✅ #${result.tabPosition}:${result.tabTitle}`
       : '✅ Sent';
-    showCenteredNotification(msg, 3000);
+    vscode.window.withProgress(
+      { location: vscode.ProgressLocation.Notification, title: msg },
+      () => new Promise(resolve => setTimeout(resolve, 3000)),
+    );
 
-    // Focus Kitty after notification is visible
-    setTimeout(() => execFileAsync('open', ['-a', 'kitty']).catch(() => {}), 800);
+    // Focus Kitty
+    execFileAsync('open', ['-a', 'kitty']).catch(() => {});
   } else {
     // Failure feedback with diagnostic
     const actions = result.error?.includes('socket')
