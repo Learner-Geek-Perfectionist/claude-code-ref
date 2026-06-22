@@ -33,7 +33,7 @@ VS Code 版的 Smart Copy 开关保存为全局用户设置 `code-ref.smartCopy.
 ## 环境要求
 
 - **VS Code** 1.85+
-- **Android Studio 2025.3 / JetBrains 2025.3 系列 IDE**
+- **Android Studio / JetBrains 2025.3-2026.1 系列 IDE**
 - **Windows / Linux / macOS** 均支持复制到剪贴板
 
 ## VS Code 安装
@@ -46,7 +46,7 @@ npm run install:vscode
 npm run package:vscode
 
 # 安装 .vsix 文件
-code --install-extension vscode/code-ref-1.1.3.vsix
+code --install-extension vscode/code-ref-1.1.4.vsix
 ```
 
 ## Android Studio 安装
@@ -58,7 +58,7 @@ npm run package:jetbrains
 生成的插件包位于：
 
 ```text
-jetbrains/build/distributions/code-ref-jetbrains-1.1.3.zip
+jetbrains/build/distributions/code-ref-jetbrains-1.1.4.zip
 ```
 
 在 Android Studio 中打开设置里的插件页面，选择“从磁盘安装插件”，选中这个 `.zip` 文件安装，然后重启 IDE。
