@@ -46,7 +46,7 @@ npm run install:vscode
 npm run package:vscode
 
 # 安装 .vsix 文件
-code --install-extension vscode/code-ref-1.1.4.vsix
+code --install-extension vscode/code-ref-1.1.5.vsix
 ```
 
 ## Android Studio 安装
@@ -58,7 +58,7 @@ npm run package:jetbrains
 生成的插件包位于：
 
 ```text
-jetbrains/build/distributions/code-ref-jetbrains-1.1.4.zip
+jetbrains/build/distributions/code-ref-jetbrains-1.1.5.zip
 ```
 
 在 Android Studio 中打开设置里的插件页面，选择“从磁盘安装插件”，选中这个 `.zip` 文件安装，然后重启 IDE。
