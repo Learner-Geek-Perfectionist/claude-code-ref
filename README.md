@@ -48,7 +48,7 @@ npm run install:vscode
 npm run package:vscode
 
 # 安装 .vsix 文件
-code --install-extension vscode/code-ref-1.1.5.vsix
+code --install-extension vscode/code-ref-1.2.1.vsix
 ```
 
 ## Android Studio 安装
@@ -60,7 +60,7 @@ npm run package:jetbrains
 生成的插件包位于：
 
 ```text
-jetbrains/build/distributions/code-ref-jetbrains-1.1.5.zip
+jetbrains/build/distributions/code-ref-jetbrains-1.2.1.zip
 ```
 
 在 Android Studio 中打开设置里的插件页面，选择“从磁盘安装插件”，选中这个 `.zip` 文件安装，然后重启 IDE。
@@ -69,9 +69,11 @@ jetbrains/build/distributions/code-ref-jetbrains-1.1.5.zip
 
 | 操作 | 快捷键 |
 |------|--------|
-| 开关 Smart Copy，若有选区则按切换后的状态复制 | 点击状态栏 `Code Ref ON/OFF`；VS Code 另可按 macOS `Cmd+Alt+C` / Windows、Linux `Ctrl+Alt+C`，JetBrains 可在 Settings → Keymap 中自行绑定 |
+| 开关 Smart Copy，若有选区则按切换后的状态复制 | 点击状态栏 `Code Ref ON/OFF`；macOS `Cmd+Alt+C` / Windows、Linux `Ctrl+Shift+C` |
 | macOS 复制代码引用 | `Cmd+C` |
 | Windows / Linux 复制代码引用 | `Ctrl+C` |
+
+Android Studio / JetBrains IDE 默认把 macOS `Cmd+Alt+C` 用作 Extract Constant。Code Ref JetBrains 插件会在 macOS 接管 `Cmd+Alt+C`，在 Windows / Linux 使用 `Ctrl+Shift+C` 切换 Smart Copy，因此不会再触发 `Cannot perform refactoring without an expression`。如果仍需要 Extract Constant，可在 Settings → Keymap 中给 Extract Constant 重新绑定一个快捷键。
 
 状态栏显示 Smart Copy 状态：
 - `Code Ref ON` — 选中文本后复制快捷键会复制代码引用

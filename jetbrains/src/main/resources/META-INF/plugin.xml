@@ -8,6 +8,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.learnergeekperfectionist.coderef.SmartCopySettings"/>
         <applicationService serviceImplementation="com.github.learnergeekperfectionist.coderef.CodeRefCopyHandlerInstaller"/>
+        <applicationService serviceImplementation="com.github.learnergeekperfectionist.coderef.CodeRefShortcutDispatcherInstaller"/>
+        <applicationService serviceImplementation="com.github.learnergeekperfectionist.coderef.CodeRefKeymapShortcutInstaller"/>
         <postStartupActivity implementation="com.github.learnergeekperfectionist.coderef.CodeRefStartupActivity"/>
         <statusBarWidgetFactory implementation="com.github.learnergeekperfectionist.coderef.CodeRefStatusBarWidgetFactory"/>
     </extensions>
