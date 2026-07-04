@@ -69,7 +69,7 @@ jetbrains/build/distributions/code-ref-jetbrains-1.1.5.zip
 
 | 操作 | 快捷键 |
 |------|--------|
-| 开关 Smart Copy，若有选区则按切换后的状态复制 | 点击状态栏 `Code Ref ON/OFF`，或按 macOS `Cmd+Alt+C` / Windows、Linux `Ctrl+Alt+C` |
+| 开关 Smart Copy，若有选区则按切换后的状态复制 | 点击状态栏 `Code Ref ON/OFF`；VS Code 另可按 macOS `Cmd+Alt+C` / Windows、Linux `Ctrl+Alt+C`，JetBrains 可在 Settings → Keymap 中自行绑定 |
 | macOS 复制代码引用 | `Cmd+C` |
 | Windows / Linux 复制代码引用 | `Ctrl+C` |
 

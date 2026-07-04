@@ -10,7 +10,7 @@ Code Ref 可以把 Android Studio / JetBrains IDE 编辑器里选中的代码复
 
 ## 使用方式
 
-1. 点击状态栏的 `Code Ref OFF` 或按 `Cmd+Alt+C` / `Ctrl+Alt+C`，开启 Smart Copy。
+1. 点击状态栏的 `Code Ref OFF`，开启 Smart Copy。
 2. 在 Android Studio 或 JetBrains IDE 编辑器中选中代码。
 3. 按系统复制快捷键：
    - macOS: `Cmd+C`
@@ -19,7 +19,9 @@ Code Ref 可以把 Android Studio / JetBrains IDE 编辑器里选中的代码复
 
 Smart Copy 只在 IDE 编辑器有选区时覆盖复制行为。开关关闭、没有选中文本、或焦点不在支持的 IDE 编辑器中时，默认复制行为不受影响。
 
-点击状态栏 `Code Ref ON/OFF` 或按 `Cmd+Alt+C` / `Ctrl+Alt+C` 时，如果当前编辑器已有选区，Code Ref 会按切换后的状态立即写入剪贴板：切到 ON 复制代码引用，切到 OFF 复制选中的原文。
+点击状态栏 `Code Ref ON/OFF` 时，如果当前编辑器已有选区，Code Ref 会按切换后的状态立即写入剪贴板：切到 ON 复制代码引用，切到 OFF 复制选中的原文。
+
+插件默认不预设开关快捷键，以免与 IDE 的重构快捷键（如 `Cmd/Ctrl+Alt+C` 提取常量）冲突。如需快捷键，可在 Settings → Keymap 中搜索 `Toggle Code Ref Smart Copy` 自行绑定。
 
 ## 构建
 
