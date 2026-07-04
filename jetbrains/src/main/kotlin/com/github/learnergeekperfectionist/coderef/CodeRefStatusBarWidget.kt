@@ -1,6 +1,7 @@
 package com.github.learnergeekperfectionist.coderef
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.wm.CustomStatusBarWidget
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
@@ -19,6 +20,7 @@ import javax.swing.SwingUtilities
 class CodeRefStatusBarWidget(
     private val settings: SmartCopySettings = SmartCopySettings.getInstance(),
     private val updateStatusBars: () -> Unit = StatusBarUpdater::updateAll,
+    private val copySelectedTextForState: (StatusBar?, Boolean) -> Boolean = ::copySelectedTextForStateFromStatusBar,
 ) : StatusBarWidget, CustomStatusBarWidget {
     private var statusBar: StatusBar? = null
     private val component = CodeRefStatusBarComponent(settings, ::toggle)
@@ -36,7 +38,8 @@ class CodeRefStatusBarWidget(
     }
 
     private fun toggle() {
-        settings.toggle()
+        val enabled = settings.toggle()
+        copySelectedTextForState(statusBar, enabled)
         component.refresh()
         statusBar?.updateWidget(ID())
         updateStatusBars()
@@ -135,3 +138,9 @@ private fun statusTooltip(enabled: Boolean): String =
 
 private fun statusIcon(enabled: Boolean): Icon =
     if (enabled) AllIcons.Actions.Checked else AllIcons.Actions.Cancel
+
+private fun copySelectedTextForStateFromStatusBar(statusBar: StatusBar?, enabled: Boolean): Boolean {
+    val project = statusBar?.project ?: return false
+    val editor = FileEditorManager.getInstance(project).selectedTextEditor
+    return ReferenceClipboard.copyForSmartCopyState(editor, enabled)
+}

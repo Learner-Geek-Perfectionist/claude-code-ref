@@ -46,12 +46,12 @@ export function buildReference(editor: ReferenceEditor): string {
 
 export function createClipboardReferenceCopier(
   deps: ClipboardReferenceCopierDependencies,
-): () => Promise<void> {
+): () => Promise<boolean> {
   return async () => {
     const editor = deps.getEditor();
     if (!editor) {
       await deps.onNoEditor();
-      return;
+      return false;
     }
 
     const refText = buildReference(editor).trimEnd();
@@ -60,9 +60,10 @@ export function createClipboardReferenceCopier(
       await deps.writeClipboard(refText);
     } catch (error: unknown) {
       await deps.onClipboardFailure(error);
-      return;
+      return false;
     }
 
     await deps.onSuccess?.();
+    return true;
   };
 }

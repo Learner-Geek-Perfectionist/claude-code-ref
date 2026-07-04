@@ -16,6 +16,10 @@
         <action id="CodeRef.ToggleSmartCopy"
                 class="com.github.learnergeekperfectionist.coderef.ToggleSmartCopyAction"
                 text="Toggle Code Ref Smart Copy"
-                description="Enable or disable Code Ref Smart Copy"/>
+                description="Enable or disable Code Ref Smart Copy">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt C"/>
+            <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt C"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt C"/>
+        </action>
     </actions>
 </idea-plugin>

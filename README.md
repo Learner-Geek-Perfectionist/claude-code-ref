@@ -12,8 +12,8 @@ code-ref/
 
 ## 工作原理
 
-1. 点击状态栏的 `Code Ref OFF`，开启 Smart Copy
-2. 在 VS Code 编辑器中选中一段代码
+1. 点击状态栏的 `Code Ref OFF` 或按开关快捷键，开启 Smart Copy
+2. 在编辑器中选中一段代码
 3. 按系统复制快捷键：
    - macOS: `Cmd+C`
    - Windows / Linux: `Ctrl+C`
@@ -23,6 +23,8 @@ code-ref/
    - Windows / Linux: `Ctrl+V`
 
 Smart Copy 只在编辑器有选区时覆盖复制行为。未选中文本、开关关闭、或焦点不在支持的 IDE 编辑器中时，系统和 IDE 的默认复制行为不受影响。
+
+点击状态栏 `Code Ref ON/OFF` 或按开关快捷键时，如果当前编辑器已有选区，Code Ref 会按切换后的状态立即写入剪贴板：切到 ON 复制代码引用，切到 OFF 复制选中的原文。
 
 VS Code 版的 Smart Copy 开关保存为全局用户设置 `code-ref.smartCopy.enabled`，多个 VS Code 窗口会使用同一个开关状态。JetBrains 版使用应用级设置，多个项目窗口共享同一个开关状态。
 
@@ -67,7 +69,7 @@ jetbrains/build/distributions/code-ref-jetbrains-1.1.5.zip
 
 | 操作 | 快捷键 |
 |------|--------|
-| 开关 Smart Copy | 点击状态栏 `Code Ref ON/OFF` |
+| 开关 Smart Copy，若有选区则按切换后的状态复制 | 点击状态栏 `Code Ref ON/OFF`，或按 macOS `Cmd+Alt+C` / Windows、Linux `Ctrl+Alt+C` |
 | macOS 复制代码引用 | `Cmd+C` |
 | Windows / Linux 复制代码引用 | `Ctrl+C` |
 

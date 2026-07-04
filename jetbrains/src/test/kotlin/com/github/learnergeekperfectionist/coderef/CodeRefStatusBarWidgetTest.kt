@@ -47,7 +47,15 @@ class CodeRefStatusBarWidgetTest {
     @Test
     fun `clicking status bar component toggles setting and refreshes state`() {
         val settings = SmartCopySettings().apply { enabled = false }
-        val widget = CodeRefStatusBarWidget(settings, updateStatusBars = {})
+        val events = mutableListOf<String>()
+        val widget = CodeRefStatusBarWidget(
+            settings,
+            updateStatusBars = { events.add("status") },
+            copySelectedTextForState = { _, enabled ->
+                events.add("copy:$enabled")
+                true
+            },
+        )
         val component = (widget as CustomStatusBarWidget).component
         val label = statusLabel(component)
 
@@ -68,6 +76,7 @@ class CodeRefStatusBarWidgetTest {
         assertTrue(settings.enabled)
         assertEquals("Code Ref ON", label.text)
         assertSame(AllIcons.Actions.Checked, label.icon)
+        assertEquals(listOf("copy:true", "status"), events)
     }
 
     private fun statusLabel(component: JComponent): JLabel {

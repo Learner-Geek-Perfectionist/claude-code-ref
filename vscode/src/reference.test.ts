@@ -72,10 +72,32 @@ test('copyReference copies the built reference to clipboard only', async () => {
     },
   });
 
-  await copyReference();
+  const copied = await copyReference();
 
+  assert.equal(copied, true);
   assert.deepEqual(events, [
     'clipboard:@/tmp/project/src/app.ts#10-12',
     'success',
   ]);
+});
+
+test('copyReference returns false when there is no selected editor', async () => {
+  const events: string[] = [];
+  const copyReference = createClipboardReferenceCopier({
+    getEditor: () => undefined,
+    writeClipboard: async text => {
+      events.push(`clipboard:${text}`);
+    },
+    onNoEditor: () => {
+      events.push('no-editor');
+    },
+    onClipboardFailure: () => {
+      events.push('clipboard-failed');
+    },
+  });
+
+  const copied = await copyReference();
+
+  assert.equal(copied, false);
+  assert.deepEqual(events, ['no-editor']);
 });

@@ -3,7 +3,7 @@
   "displayName": "Code Ref",
   "description": "Copy selected VS Code text as absolute-path code references with an opt-in smart copy shortcut",
   "publisher": "Xin",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -39,6 +39,11 @@
         "key": "ctrl+c",
         "mac": "cmd+c",
         "when": "code-ref.smartCopyEnabled && editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "code-ref.toggleSmartCopy",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c"
       }
     ],
     "configuration": {

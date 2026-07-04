@@ -67,21 +67,61 @@ async function setSmartCopyContext(
   );
 }
 
-function createCopyReferenceCommand(): () => Promise<void> {
+type NoEditorHandler = () => void | Thenable<void>;
+type ClipboardFailureHandler = (error: unknown) => void | Thenable<void>;
+
+function createCopyReferenceCommand(
+  onNoEditor?: NoEditorHandler,
+  onClipboardFailure?: ClipboardFailureHandler,
+): () => Promise<boolean> {
   return createClipboardReferenceCopier({
     getEditor: getSelectedReferenceEditor,
     writeClipboard: text => vscode.env.clipboard.writeText(text),
-    onNoEditor: () => {
+    onNoEditor: onNoEditor ?? (() => {
       void vscode.window.showInformationMessage(
         'Select text in an editor to copy a code reference.',
       );
-    },
-    onClipboardFailure: () => {
+    }),
+    onClipboardFailure: onClipboardFailure ?? (() => {
       void vscode.window.showErrorMessage(
         'Failed to copy code reference to clipboard.',
       );
-    },
+    }),
   });
+}
+
+function getSelectedText(): string | undefined {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return undefined;
+  }
+
+  const selectedTexts = editor.selections
+    .filter(selection => !selection.isEmpty)
+    .map(selection => editor.document.getText(selection));
+  if (selectedTexts.length === 0) {
+    return undefined;
+  }
+
+  return selectedTexts.join('\n');
+}
+
+async function copySelectedText(): Promise<boolean> {
+  const selectedText = getSelectedText();
+  if (selectedText === undefined) {
+    return false;
+  }
+
+  try {
+    await vscode.env.clipboard.writeText(selectedText);
+  } catch (error: unknown) {
+    void vscode.window.showErrorMessage(
+      'Failed to copy selected text to clipboard.',
+    );
+    return false;
+  }
+
+  return true;
 }
 
 // ── Lifecycle ───────────────────────────────────────────────
@@ -117,9 +157,25 @@ export function activate(context: vscode.ExtensionContext): void {
     'code-ref.copyReference',
     createCopyReferenceCommand(),
   );
+  const copyReferenceForToggle = createCopyReferenceCommand(
+    () => undefined,
+    () => {
+      void vscode.window.showErrorMessage(
+        'Failed to copy code reference to clipboard.',
+      );
+    },
+  );
   const toggleCmd = vscode.commands.registerCommand(
     'code-ref.toggleSmartCopy',
-    () => stateController.toggle(),
+    async () => {
+      const enabled = await stateController.toggle();
+      if (enabled) {
+        await copyReferenceForToggle();
+      } else {
+        await copySelectedText();
+      }
+      return enabled;
+    },
   );
   const configurationListener = vscode.workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration(SMART_COPY_CONFIGURATION_FULL_KEY)) {
