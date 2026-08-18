@@ -7,6 +7,8 @@ import com.intellij.openapi.util.TextRange
 import java.awt.datatransfer.StringSelection
 
 object ReferenceClipboard {
+    fun isSupportedFilePath(path: String?): Boolean = !path.isNullOrBlank()
+
     fun canCopyFrom(
         editor: Editor?,
         requireSmartCopyEnabled: Boolean = false,
@@ -18,7 +20,7 @@ object ReferenceClipboard {
             return false
         }
 
-        return FileDocumentManager.getInstance().getFile(editor.document)?.path != null &&
+        return isSupportedFilePath(FileDocumentManager.getInstance().getFile(editor.document)?.path) &&
             selectedRanges(editor).isNotEmpty()
     }
 
@@ -34,14 +36,16 @@ object ReferenceClipboard {
         }
 
         val filePath = FileDocumentManager.getInstance().getFile(editor.document)?.path
-            ?: return false
+        if (!isSupportedFilePath(filePath)) {
+            return false
+        }
         val selections = selectedRanges(editor)
         if (selections.isEmpty()) {
             return false
         }
 
         CopyPasteManager.getInstance().setContents(
-            StringSelection(ReferenceBuilder.build(filePath, selections)),
+            StringSelection(ReferenceBuilder.build(checkNotNull(filePath), selections)),
         )
         return true
     }
